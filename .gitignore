@@ -16,3 +16,4 @@ credentials.json
 # IDE
 .idea/
 .vscode/
+credentials.json
