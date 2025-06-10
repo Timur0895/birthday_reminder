@@ -1,19 +1,10 @@
-# Системные файлы
+# .gitignore
+.env
+credentials.json
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Виртуальные окружения
-env/
-venv/
-.venv/
-
-# Конфиденциальные файлы
-.env
-credentials.json
-
-# IDE
+.env.*
 .idea/
 .vscode/
-credentials.json
