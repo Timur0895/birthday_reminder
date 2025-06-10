@@ -81,12 +81,12 @@ def build_message(delta, person):
             f"@{ '@timur0x01' }"
         )
     elif delta == 1:
-        return return (
+        return (
             f"📢 Завтра день рождения у {name}! Готовим поздравления 🎁\n"
             f"@{ '@timur0x01' }"
         )
     elif delta == 0:
-        return return (
+        return (
             f"📢 Сегодня день рождения у {name} 🎂\n"
             f"@{ '@timur0x01' }"
         )
