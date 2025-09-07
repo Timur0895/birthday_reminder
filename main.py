@@ -173,8 +173,8 @@ def send_monthly_digest_if_first_day(birthdays):
     Если сегодня 1 число — отправляем дайджест этого месяца.
     """
     today = _today()
-    if today.day == 07:
-        return False
+    if today.day == 7:
+        return True
 
     month_items = birthdays_in_month(birthdays, today.month)
     msg = build_monthly_digest_message(today.month, month_items)
