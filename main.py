@@ -168,19 +168,31 @@ def build_monthly_digest_message(month: int, items):
     return f"{title}\n\n{body}\n\nНе забываем поздравить! 🥳"
 
 
-def send_monthly_digest_if_first_day(birthdays):
+MONTHS_RU_NOM = {
+    1: "января", 2: "февраля", 3: "марта", 4: "апреля",
+    5: "мая", 6: "июня", 7: "июля", 8: "августа",
+    9: "сентября", 10: "октября", 11: "ноября", 12: "декабря",
+}
+
+def send_monthly_digest_if_first_day(birthdays, force: bool = False):
     """
     Если сегодня 1 число — отправляем дайджест этого месяца.
+    force=True позволяет отправить дайджест в любой день (для теста).
     """
     today = _today()
-    pretty_date = today.strftime("%d.%m.%Y")  # например: 07.09.2025
-    print(f"🗓 Проверка: сегодня {pretty_date}")
+    nice_date = f"{today.day} {MONTHS_RU_NOM[today.month]} {today.year}"
+    print(f"🗓 Проверка: сегодня {nice_date} (force={force})")
 
-    if today.day != 1:
+    if not force and today.day != 1:
         print("ℹ️ Сегодня не первое число месяца — дайджест не отправляется.")
         return False
 
     month_items = birthdays_in_month(birthdays, today.month)
+    print(f"🧾 В этом месяце найдено именинников: {len(month_items)}")
+    if month_items[:3]:
+        preview = ", ".join([f"{x['day']:02d} — {x['name']}" for x in month_items[:3]])
+        print(f"🔎 Превью: {preview}{'…' if len(month_items) > 3 else ''}")
+
     msg = build_monthly_digest_message(today.month, month_items)
     send_telegram_message(msg)
     print("📤 Отправлен ежемесячный дайджест:\n", msg)
@@ -188,27 +200,25 @@ def send_monthly_digest_if_first_day(birthdays):
 
 
 
+
 # ---------- MAIN ----------
 
 def main():
     birthdays = get_birthdays_data()
+    print(f"🔵 Найдено {len(birthdays)} записей из таблицы")
 
-    print(f"🔎 Найдено {len(birthdays)} записей из таблицы")
+    force = os.getenv("FORCE_DIGEST") in ("1", "true", "True", "yes")
+    send_monthly_digest_if_first_day(birthdays, force=force)
 
-    # 1) Первого числа — шлём дайджест
-    send_monthly_digest_if_first_day(birthdays)
-
-    # 2) Ежедневные «за 3/2/1/0 дня»
+    # далее — обычные напоминания 3/2/1/0
     upcoming = find_upcoming_birthdays(birthdays)
+    print("🧪 Ближайшие:", upcoming)
     if not upcoming:
         print("✅ Сегодня напоминаний нет.")
         return
-
     for person in upcoming:
-        delta = person['days_left']
-        message = build_message(delta, person)
-        print(f"📤 Отправка сообщения: {message}")
-        send_telegram_message(message)
+        send_telegram_message(build_message(person['days_left'], person))
+
 
 
 if __name__ == "__main__":
