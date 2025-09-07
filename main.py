@@ -174,13 +174,13 @@ MONTHS_RU_NOM = {
     9: "сентября", 10: "октября", 11: "ноября", 12: "декабря",
 }
 
-def send_monthly_digest_if_first_day(birthdays):
+def send_monthly_digest_if_first_day(birthdays, force: bool = False):
     """
     1-го числа формирует дайджест за текущий месяц.
-    В остальные дни просто пишет в лог и ничего не делает.
+    Если force=True — шлёт дайджест в любой день (для теста).
     """
     today = _today()
-    if today.day != 1:
+    if not force and today.day != 1:
         print(f"ℹ️ Сегодня {today.day:02d}.{today.month:02d}, не 1-е число — дайджест пропускаем.")
         return None
 
@@ -199,14 +199,15 @@ def send_monthly_digest_if_first_day(birthdays):
     return msg
 
 
+
 def main():
     birthdays = get_birthdays_data()
     print(f"🔎 Найдено {len(birthdays)} записей из таблицы")
 
-    # 1) Месячный дайджест (только если сегодня 1 число)
-    send_monthly_digest_if_first_day(birthdays)
+    # Для теста — принудительно вызвать дайджест
+    send_monthly_digest_if_first_day(birthdays, force=True)
 
-    # 2) Ежедневные напоминания (за 3/2/1/0 дней)
+    # Ежедневные напоминания
     upcoming = find_upcoming_birthdays(birthdays)
     if not upcoming:
         print("✅ Сегодня напоминаний нет.")
@@ -217,6 +218,7 @@ def main():
         message = build_message(delta, person)
         print(f"📤 Отправка сообщения: {message}")
         send_telegram_message(message)
+
 
 
 if __name__ == "__main__":
