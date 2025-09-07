@@ -204,20 +204,20 @@ def main():
     birthdays = get_birthdays_data()
     print(f"🔎 Найдено {len(birthdays)} записей из таблицы")
 
-    # Для теста — принудительно вызвать дайджест
-    send_monthly_digest_if_first_day(birthdays, force=True)
+    force = os.getenv("FORCE_DIGEST") in ("1", "true", "True", "yes")
+    send_monthly_digest_if_first_day(birthdays, force=force)
 
     # Ежедневные напоминания
     upcoming = find_upcoming_birthdays(birthdays)
     if not upcoming:
         print("✅ Сегодня напоминаний нет.")
         return
-
     for person in upcoming:
         delta = person['days_left']
         message = build_message(delta, person)
         print(f"📤 Отправка сообщения: {message}")
         send_telegram_message(message)
+
 
 
 
