@@ -176,42 +176,47 @@ MONTHS_RU_NOM = {
 
 def send_monthly_digest_if_first_day(birthdays):
     """
-    Без проверок даты: всегда формирует дайджест за текущий месяц,
-    печатает его в логи и отправляет в Telegram.
+    1-го числа формирует дайджест за текущий месяц.
+    В остальные дни просто пишет в лог и ничего не делает.
     """
     today = _today()
+    if today.day != 1:
+        print(f"ℹ️ Сегодня {today.day:02d}.{today.month:02d}, не 1-е число — дайджест пропускаем.")
+        return None
+
     month_items = birthdays_in_month(birthdays, today.month)
 
-    # печать в логи, чтобы сразу видеть в Actions
-    print(f"🗓 Дайджест за месяц: {today.month:02d}.{today.year}")
+    print(f"🗓 Дайджест за {today.month:02d}.{today.year}:")
     if not month_items:
         print("— В этом месяце именинников нет.")
     else:
-        print("— Именинники:")
         for it in month_items:
             print(f"   • {it['day']:02d} — {it['name']}")
 
-    # готовим и шлём сообщение в Telegram
     msg = build_monthly_digest_message(today.month, month_items)
     send_telegram_message(msg)
     print("📤 Отправлен ежемесячный дайджест:\n", msg)
+    return msg
 
-    return msg  # на всякий случай возвращаем текст
-
-
-
-
-
-# ---------- MAIN ----------
 
 def main():
     birthdays = get_birthdays_data()
-    print(f"🔵 Найдено {len(birthdays)} записей из таблицы")
+    print(f"🔎 Найдено {len(birthdays)} записей из таблицы")
 
-    # всегда формируем дайджест за текущий месяц
+    # 1) Месячный дайджест (только если сегодня 1 число)
     send_monthly_digest_if_first_day(birthdays)
 
+    # 2) Ежедневные напоминания (за 3/2/1/0 дней)
+    upcoming = find_upcoming_birthdays(birthdays)
+    if not upcoming:
+        print("✅ Сегодня напоминаний нет.")
+        return
 
+    for person in upcoming:
+        delta = person['days_left']
+        message = build_message(delta, person)
+        print(f"📤 Отправка сообщения: {message}")
+        send_telegram_message(message)
 
 
 if __name__ == "__main__":
