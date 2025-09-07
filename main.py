@@ -165,7 +165,7 @@ def build_monthly_digest_message(month: int, items):
 
     lines = [f"• {day:02d} числа — {name}" for (day, name) in [(it['day'], it['name']) for it in items]]
     body = "\n".join(lines)
-    return f"{title}\n\n{body}\n\nПоздравляем всех заранее! 🥳"
+    return f"{title}\n\n{body}\n\nНе забываем поздравить! 🥳"
 
 
 def send_monthly_digest_if_first_day(birthdays):
@@ -173,14 +173,17 @@ def send_monthly_digest_if_first_day(birthdays):
     Если сегодня 1 число — отправляем дайджест этого месяца.
     """
     today = _today()
-    if today.day == 7:
-        month_items = birthdays_in_month(birthdays, today.month)
-        msg = build_monthly_digest_message(today.month, month_items)
-        send_telegram_message(msg)
-        print("📤 Отправлен ежемесячный дайджест:\n", msg)
-        return True
+    print(f"🗓 Проверка: сегодня {today.strftime('%d.%m.%Y')}")
 
-    
+    if today.day != 1:
+        print("ℹ️ Сегодня не первое число месяца — дайджест не отправляется.")
+        return False
+
+    month_items = birthdays_in_month(birthdays, today.month)
+    msg = build_monthly_digest_message(today.month, month_items)
+    send_telegram_message(msg)
+    print("📤 Отправлен ежемесячный дайджест:\n", msg)
+    return True
 
 
 # ---------- MAIN ----------
