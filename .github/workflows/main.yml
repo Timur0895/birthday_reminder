@@ -29,5 +29,5 @@ jobs:
         CHAT_ID: ${{ secrets.CHAT_ID }}
         TOPIC_ID: ${{ secrets.TOPIC_ID }}
         TZ: Asia/Almaty
-        FORCE_DIGEST: "1"   # <-- ВКЛЮЧИ на один ручной запуск для теста дайджеста
+        FORCE_DIGEST: "0"   # <-- ВКЛЮЧИ на один ручной запуск для теста дайджеста
       run: python main.py
