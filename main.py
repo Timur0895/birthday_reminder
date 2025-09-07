@@ -163,7 +163,7 @@ def build_monthly_digest_message(month: int, items):
     if not items:
         return f"{title}\n\nВ этом месяце именинников нет."
 
-    lines = [f"• {day:02d} — {name}" for (day, name) in [(it['day'], it['name']) for it in items]]
+    lines = [f"• {day:02d} числа — {name}" for (day, name) in [(it['day'], it['name']) for it in items]]
     body = "\n".join(lines)
     return f"{title}\n\n{body}\n\nПоздравляем всех заранее! 🥳"
 
