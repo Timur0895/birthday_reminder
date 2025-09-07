@@ -2,7 +2,7 @@ name: Birthday Reminder
 
 on:
   schedule:
-    - cron: '0 4 * * *'  # каждый день в 10:00 по МСК (UTC+3)
+    - cron: '0 4 * * *'  # <-- это время в UTC; см. примечание ниже про корректное время
   workflow_dispatch:
 
 jobs:
@@ -19,6 +19,7 @@ jobs:
 
     - name: Install dependencies
       run: pip install -r requirements.txt
+
     - name: Create credentials.json from secret
       run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
 
@@ -28,4 +29,5 @@ jobs:
         CHAT_ID: ${{ secrets.CHAT_ID }}
         TOPIC_ID: ${{ secrets.TOPIC_ID }}
         TZ: Asia/Almaty
+        FORCE_DIGEST: "1"   # <-- ВКЛЮЧИ на один ручной запуск для теста дайджеста
       run: python main.py
