@@ -27,4 +27,6 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         CHAT_ID: ${{ secrets.CHAT_ID }}
         TOPIC_ID: ${{ secrets.TOPIC_ID }}
+        TZ: Asia/Almaty
+        FORCE_DIGEST: "1"   # включи, чтобы протестировать дайджест прямо сейчас
       run: python main.py
