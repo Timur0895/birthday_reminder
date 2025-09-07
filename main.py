@@ -174,13 +174,13 @@ def send_monthly_digest_if_first_day(birthdays):
     """
     today = _today()
     if today.day == 7:
+        month_items = birthdays_in_month(birthdays, today.month)
+        msg = build_monthly_digest_message(today.month, month_items)
+        send_telegram_message(msg)
+        print("📤 Отправлен ежемесячный дайджест:\n", msg)
         return True
 
-    month_items = birthdays_in_month(birthdays, today.month)
-    msg = build_monthly_digest_message(today.month, month_items)
-    send_telegram_message(msg)
-    print("📤 Отправлен ежемесячный дайджест:\n", msg)
-    return True
+    
 
 
 # ---------- MAIN ----------
