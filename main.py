@@ -123,7 +123,7 @@ def find_upcoming_birthdays(birthdays):
 
 def build_message(delta, person):
     name = person['name']
-    tag = '@zari_lkv'  # можешь заменить/убрать
+    tag = '@assemshapagat'  # можешь заменить/убрать
 
     if delta == 3:
         return f"📢 Через 3 дня день рождения у {name}! Не забудьте подготовиться 🎉\n{tag}"
